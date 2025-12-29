@@ -1006,7 +1006,20 @@
     </style>
 </head>
 
+
 <body>
+    <div style="
+  background:#fff3cd;
+  color:#664d03;
+  padding:12px;
+  text-align:center;
+  font-size:14px;
+  font-family:Arial, sans-serif;
+">
+  💜 This is a personal, non-commercial love letter website.
+  <br>
+  No data is collected. No forms, logins, or payments exist.
+</div>
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
@@ -1254,7 +1267,7 @@
     <!-- Interactive Section -->
     <section class="interactive-section">
         <div class="glow-effect"></div>
-        <button class="touch-button">Touch for a surprise 💜</button>
+        <button class="touch-button">Reveal a message 💜</button>
         <div class="secret-message">
             First New Year together<br>
             Same dreamy heart<br>
@@ -1280,7 +1293,7 @@
                 To you my everything
             </span>
         </div>
-        <button class="music-toggle" id="musicToggle">🎵 Add background music</button>
+        <button class="music-toggle" id="musicToggle">🎵 Optional background music (click to enable)</button>
         
         <!-- Audio element (user-initiated only) -->
         <audio id="backgroundMusic" loop style="display: none;">
@@ -1466,9 +1479,6 @@
 
         // Start floating symbols
         createFloatingSymbols();
-
-        // Recreate floating symbols periodically
-        setInterval(createFloatingSymbols, 30000);
 
         // Interactive button functionality
         const touchButton = document.querySelector('.touch-button');
