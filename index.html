@@ -1280,18 +1280,78 @@
                 To you my everything
             </span>
         </div>
-        <button class="music-toggle" id="musicToggle">🎵 Play our song</button>
+        <button class="music-toggle" id="musicToggle">🎵 Add background music</button>
         
-        <!-- Audio element for background music -->
-        <audio id="backgroundMusic" loop preload="auto" style="display: none;">
-            <source src="music/Perfect.mp3" type="audio/mpeg">
-            <source src="music/Perfect.ogg" type="audio/ogg">
-            Your browser does not support the audio element.
+        <!-- Audio element (user-initiated only) -->
+        <audio id="backgroundMusic" loop style="display: none;">
+            <!-- Audio will be loaded only when user clicks -->
         </audio>
     </section>
 
-    <!-- Three.js Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Three.js Library - Local version for security -->
+    <script>
+        // Simplified 3D hearts without external dependencies
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const container = document.getElementById('canvas-container');
+        
+        canvas.width = container.offsetWidth;
+        canvas.height = container.offsetHeight;
+        canvas.style.width = '100%';
+        canvas.style.height = '100%';
+        container.appendChild(canvas);
+        
+        // Simple 2D hearts animation (safer than 3D)
+        const hearts = [];
+        const heartCount = window.innerWidth > 768 ? 15 : 8;
+        
+        for (let i = 0; i < heartCount; i++) {
+            hearts.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 20 + 10,
+                speedX: (Math.random() - 0.5) * 2,
+                speedY: (Math.random() - 0.5) * 2,
+                opacity: Math.random() * 0.5 + 0.3
+            });
+        }
+        
+        function drawHeart(x, y, size, opacity) {
+            ctx.save();
+            ctx.globalAlpha = opacity;
+            ctx.font = size + 'px Arial';
+            ctx.fillStyle = '#B57EDC';
+            ctx.textAlign = 'center';
+            ctx.fillText('♥', x, y);
+            ctx.restore();
+        }
+        
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            hearts.forEach(heart => {
+                heart.x += heart.speedX;
+                heart.y += heart.speedY;
+                
+                if (heart.x > canvas.width + 50) heart.x = -50;
+                if (heart.x < -50) heart.x = canvas.width + 50;
+                if (heart.y > canvas.height + 50) heart.y = -50;
+                if (heart.y < -50) heart.y = canvas.height + 50;
+                
+                drawHeart(heart.x, heart.y, heart.size, heart.opacity);
+            });
+            
+            requestAnimationFrame(animate);
+        }
+        
+        animate();
+        
+        // Handle resize
+        window.addEventListener('resize', () => {
+            canvas.width = container.offsetWidth;
+            canvas.height = container.offsetHeight;
+        });
+    </script>
 
     <script>
         // Create floating particles in hero
@@ -1307,126 +1367,6 @@
             }
         }
         createParticles();
-
-        // Three.js Scene Setup
-        const container = document.getElementById('canvas-container');
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setClearColor(0x000000, 0);
-        container.appendChild(renderer.domElement);
-
-        // Create floating hearts (mobile optimized)
-        const heartShape = new THREE.Shape();
-        heartShape.moveTo(0, 0.3);
-        heartShape.bezierCurveTo(0, 0.5, -0.3, 0.5, -0.3, 0.3);
-        heartShape.bezierCurveTo(-0.3, 0, 0, -0.3, 0, -0.5);
-        heartShape.bezierCurveTo(0, -0.3, 0.3, 0, 0.3, 0.3);
-        heartShape.bezierCurveTo(0.3, 0.5, 0, 0.5, 0, 0.3);
-
-        const extrudeSettings = {
-            depth: 0.08,
-            bevelEnabled: window.innerWidth > 768,
-            bevelThickness: 0.01,
-            bevelSize: 0.01
-        };
-        const heartGeometry = new THREE.ExtrudeGeometry(heartShape, extrudeSettings);
-
-        const hearts = [];
-        // Reduce heart count on mobile for better performance
-        const heartCount = window.innerWidth > 768 ? 15 : 8;
-
-        for (let i = 0; i < heartCount; i++) {
-            const material = new THREE.MeshPhongMaterial({
-                color: Math.random() > 0.5 ? 0xC8A2C8 : 0xB57EDC,
-                emissive: 0xB57EDC,
-                emissiveIntensity: 0.3,
-                transparent: true,
-                opacity: 0.8
-            });
-            const heart = new THREE.Mesh(heartGeometry, material);
-
-            heart.position.set(
-                (Math.random() - 0.5) * 20,
-                (Math.random() - 0.5) * 20,
-                (Math.random() - 0.5) * 20
-            );
-
-            heart.rotation.set(
-                Math.random() * Math.PI,
-                Math.random() * Math.PI,
-                Math.random() * Math.PI
-            );
-
-            heart.userData = {
-                speedX: (Math.random() - 0.5) * 0.002,
-                speedY: (Math.random() - 0.5) * 0.002,
-                rotationSpeed: (Math.random() - 0.5) * 0.01
-            };
-
-            scene.add(heart);
-            hearts.push(heart);
-        }
-
-        // Add soft lighting
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-        scene.add(ambientLight);
-
-        const pointLight1 = new THREE.PointLight(0xC8A2C8, 1, 100);
-        pointLight1.position.set(10, 10, 10);
-        scene.add(pointLight1);
-
-        const pointLight2 = new THREE.PointLight(0xB57EDC, 1, 100);
-        pointLight2.position.set(-10, -10, 10);
-        scene.add(pointLight2);
-
-        camera.position.z = 15;
-
-        // Animation loop
-        function animate() {
-            requestAnimationFrame(animate);
-
-            hearts.forEach(heart => {
-                heart.rotation.x += heart.userData.rotationSpeed;
-                heart.rotation.y += heart.userData.rotationSpeed;
-                heart.position.x += heart.userData.speedX;
-                heart.position.y += heart.userData.speedY;
-
-                // Wrap around
-                if (heart.position.x > 10) heart.position.x = -10;
-                if (heart.position.x < -10) heart.position.x = 10;
-                if (heart.position.y > 10) heart.position.y = -10;
-                if (heart.position.y < -10) heart.position.y = 10;
-            });
-
-            camera.position.x = Math.sin(Date.now() * 0.0001) * 2;
-            camera.position.y = Math.cos(Date.now() * 0.0001) * 2;
-            camera.lookAt(scene.position);
-
-            renderer.render(scene, camera);
-        }
-        animate();
-
-        // Handle window resize and mobile optimization
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-
-            // Adjust renderer quality based on screen size
-            if (window.innerWidth <= 768) {
-                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            } else {
-                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            }
-        });
-
-        // Set initial pixel ratio for mobile optimization
-        if (window.innerWidth <= 768) {
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        }
 
         // Enhanced scroll animations for all new sections
         const observerOptions = {
@@ -1564,67 +1504,48 @@
             touchButton.style.pointerEvents = 'none';
         });
 
-        // Music functionality with real audio
+        // Simple and secure music functionality
         const musicToggle = document.getElementById('musicToggle');
         const backgroundMusic = document.getElementById('backgroundMusic');
         let musicPlaying = false;
-
-        // Set initial volume
-        backgroundMusic.volume = 0.3;
+        let audioLoaded = false;
 
         musicToggle.addEventListener('click', () => {
+            if (!audioLoaded) {
+                // Load audio only when user requests it
+                backgroundMusic.innerHTML = `
+                    <source src="music/Perfect.mp3" type="audio/mpeg">
+                    <source src="music/Perfect.ogg" type="audio/ogg">
+                `;
+                backgroundMusic.load();
+                backgroundMusic.volume = 0.3;
+                audioLoaded = true;
+                
+                // First click just loads the audio
+                musicToggle.textContent = '🎵 Click again to play';
+                return;
+            }
+            
             if (musicPlaying) {
-                // Pause music with fade out effect
-                fadeOut(backgroundMusic, () => {
-                    backgroundMusic.pause();
-                    musicToggle.textContent = '🎵 Play our song';
-                    musicToggle.style.background = 'rgba(255,255,255,0.25)';
-                });
+                backgroundMusic.pause();
+                musicToggle.textContent = '🎵 Play background music';
+                musicToggle.style.background = 'rgba(255,255,255,0.25)';
             } else {
-                // Play music with fade in effect
-                backgroundMusic.play().then(() => {
-                    fadeIn(backgroundMusic);
-                    musicToggle.textContent = '🎵 Our song is playing...';
-                    musicToggle.style.background = 'rgba(255,255,255,0.4)';
-                }).catch(error => {
-                    console.log('Audio play failed:', error);
-                    alert('Please click to allow music playback');
+                backgroundMusic.play().catch(() => {
+                    musicToggle.textContent = '🎵 Music needs permission';
                 });
+                musicToggle.textContent = '🎵 Music playing... (click to pause)';
+                musicToggle.style.background = 'rgba(255,255,255,0.4)';
             }
             musicPlaying = !musicPlaying;
         });
 
-        // Fade in function
-        function fadeIn(audio) {
-            audio.volume = 0;
-            const fadeInterval = setInterval(() => {
-                if (audio.volume < 0.3) {
-                    audio.volume = Math.min(audio.volume + 0.02, 0.3);
-                } else {
-                    clearInterval(fadeInterval);
-                }
-            }, 50);
-        }
-
-        // Fade out function  
-        function fadeOut(audio, callback) {
-            const fadeInterval = setInterval(() => {
-                if (audio.volume > 0.02) {
-                    audio.volume = Math.max(audio.volume - 0.02, 0);
-                } else {
-                    clearInterval(fadeInterval);
-                    audio.volume = 0;
-                    if (callback) callback();
-                }
-            }, 50);
-        }
-
-        // Handle music when page becomes visible/hidden
+        // Handle page visibility changes
         document.addEventListener('visibilitychange', () => {
             if (document.hidden && musicPlaying) {
                 backgroundMusic.pause();
-            } else if (!document.hidden && musicPlaying) {
-                backgroundMusic.play();
+            } else if (!document.hidden && musicPlaying && audioLoaded) {
+                backgroundMusic.play().catch(() => {});
             }
         });
     </script>
