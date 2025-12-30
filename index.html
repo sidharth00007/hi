@@ -1008,7 +1008,7 @@
 
 
 <body>
-    <div style="
+    <!-- <div style="
   background:#fff3cd;
   color:#664d03;
   padding:12px;
@@ -1016,10 +1016,10 @@
   font-size:14px;
   font-family:Arial, sans-serif;
 ">
-  💜 This is a personal, non-commercial love letter website.
-  <br>
-  No data is collected. No forms, logins, or payments exist.
-</div>
+        💜 This is a personal, non-commercial love letter website.
+        <br>
+        No data is collected. No forms, logins, or payments exist.
+    </div> -->
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
@@ -1238,7 +1238,8 @@
                     been or the things we've done but for the simple miracle of having you in my life</p>
 
                 <p>You've taught me that love isnt just butterflies and grand gestures its in the quiet mornings the way
-                    you listen when I've had a long day and you turn the simplest moments into something magical just by being there</p>
+                    you listen when I've had a long day and you turn the simplest moments into something magical just by
+                    being there</p>
 
                 <p>This year you've been my comfort in storms my celebration in victories and my constant reminder
                     that the best things in life arent things at all theyre moments feelings and the people who make
@@ -1294,7 +1295,7 @@
             </span>
         </div>
         <button class="music-toggle" id="musicToggle">🎵 Optional background music (click to enable)</button>
-        
+
         <!-- Audio element (user-initiated only) -->
         <audio id="backgroundMusic" loop style="display: none;">
             <!-- Audio will be loaded only when user clicks -->
@@ -1307,17 +1308,17 @@
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
         const container = document.getElementById('canvas-container');
-        
+
         canvas.width = container.offsetWidth;
         canvas.height = container.offsetHeight;
         canvas.style.width = '100%';
         canvas.style.height = '100%';
         container.appendChild(canvas);
-        
+
         // Simple 2D hearts animation (safer than 3D)
         const hearts = [];
         const heartCount = window.innerWidth > 768 ? 15 : 8;
-        
+
         for (let i = 0; i < heartCount; i++) {
             hearts.push({
                 x: Math.random() * canvas.width,
@@ -1328,7 +1329,7 @@
                 opacity: Math.random() * 0.5 + 0.3
             });
         }
-        
+
         function drawHeart(x, y, size, opacity) {
             ctx.save();
             ctx.globalAlpha = opacity;
@@ -1338,27 +1339,27 @@
             ctx.fillText('♥', x, y);
             ctx.restore();
         }
-        
+
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
+
             hearts.forEach(heart => {
                 heart.x += heart.speedX;
                 heart.y += heart.speedY;
-                
+
                 if (heart.x > canvas.width + 50) heart.x = -50;
                 if (heart.x < -50) heart.x = canvas.width + 50;
                 if (heart.y > canvas.height + 50) heart.y = -50;
                 if (heart.y < -50) heart.y = canvas.height + 50;
-                
+
                 drawHeart(heart.x, heart.y, heart.size, heart.opacity);
             });
-            
+
             requestAnimationFrame(animate);
         }
-        
+
         animate();
-        
+
         // Handle resize
         window.addEventListener('resize', () => {
             canvas.width = container.offsetWidth;
@@ -1530,12 +1531,12 @@
                 backgroundMusic.load();
                 backgroundMusic.volume = 0.3;
                 audioLoaded = true;
-                
+
                 // First click just loads the audio
                 musicToggle.textContent = '🎵 Click again to play';
                 return;
             }
-            
+
             if (musicPlaying) {
                 backgroundMusic.pause();
                 musicToggle.textContent = '🎵 Play background music';
@@ -1555,7 +1556,7 @@
             if (document.hidden && musicPlaying) {
                 backgroundMusic.pause();
             } else if (!document.hidden && musicPlaying && audioLoaded) {
-                backgroundMusic.play().catch(() => {});
+                backgroundMusic.play().catch(() => { });
             }
         });
     </script>
